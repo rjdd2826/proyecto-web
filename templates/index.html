@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de aprendices</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f3f5f7; margin: 0; padding: 30px 16px; color: #243040; }
+        main { max-width: 850px; margin: auto; }
+        h1 { text-align: center; }
+        .panel { background: white; padding: 22px; border-radius: 12px; margin: 18px 0; box-shadow: 0 3px 12px #0000000d; }
+        label { display: block; margin: 12px 0 6px; font-weight: bold; }
+        input { width: 100%; padding: 11px; border: 1px solid #cbd2d9; border-radius: 7px; }
+        button { margin-top: 15px; padding: 11px 18px; border: 0; border-radius: 7px; background: #1769aa; color: white; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #e3e7eb; text-align: left; }
+        th { background: #edf2f7; }
+        a { color: #b42318; }
+        .mensaje { padding: 10px; border-radius: 7px; background: #e8f5e9; margin: 8px 0; }
+        .error { background: #ffebee; }
+        .tabla-contenedor { overflow-x: auto; }
+    </style>
+</head>
+<body>
+<main>
+    <h1>Registro de aprendices</h1>
+
+    <section class="panel">
+        <h2>Registrar aprendiz</h2>
+        {% with mensajes = get_flashed_messages(with_categories=true) %}
+            {% for categoria, mensaje in mensajes %}
+                <div class="mensaje {{ 'error' if categoria == 'error' else '' }}">{{ mensaje }}</div>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST">
+            <label for="nombre">Nombre completo</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="correo">Correo electrónico</label>
+            <input type="email" id="correo" name="correo" required>
+
+            <button type="submit">Guardar aprendiz</button>
+        </form>
+    </section>
+
+    <section class="panel">
+        <h2>Aprendices registrados</h2>
+        {% if aprendices %}
+        <div class="tabla-contenedor">
+            <table>
+                <thead>
+                    <tr><th>ID</th><th>Nombre</th><th>Correo</th><th>Acción</th></tr>
+                </thead>
+                <tbody>
+                {% for aprendiz in aprendices %}
+                    <tr>
+                        <td>{{ aprendiz.id }}</td>
+                        <td>{{ aprendiz.nombre }}</td>
+                        <td>{{ aprendiz.correo }}</td>
+                        <td><a href="{{ url_for('eliminar', id=aprendiz.id) }}" onclick="return confirm('¿Eliminar este registro?')">Eliminar</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+            <p>Aún no hay aprendices registrados.</p>
+        {% endif %}
+    </section>
+</main>
+</body>
+</html>
